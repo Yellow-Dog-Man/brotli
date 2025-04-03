@@ -10,6 +10,7 @@ cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0048 NEW)
 project(brotli C)
 
+option(BUILD_SHARED_SINGLE_FILE "Build shared libraries into a shared single file" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 set(BROTLI_BUILD_TOOLS ON CACHE BOOL "Build/install CLI tools")
 
@@ -125,6 +126,16 @@ if(BUILD_SHARED_LIBS)
     set_target_properties (${lib} PROPERTIES DEFINE_SYMBOL "${LIB}_SHARED_COMPILATION")
   endforeach()
 endif()
+
+# Combine, COMMON, DEC and ENC into one shared library
+# Based loosly on: https://github.com/Yellow-Dog-Man/compressonator/blob/master/cmp_framework/CMakeLists.txt#L37-L95
+# With info from: https://discourse.cmake.org/t/how-to-merge-libraries-into-single-shared-library/13421 and https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_OBJECTS
+# TODO: We don't need an entire fork to do this, Can we setup a workflow that pulls the source and just does this as a separate CMakeList or something?
+if(BUILD_SHARED_SINGLE_FILE)
+       add_library(brolib SHARED $<TARGET_OBJECTS:brotlienc> $<TARGET_OBJECTS:brotlidec>)
+       target_link_libraries(brolib brotlienc brotlidec)
+endif()
+
 
 foreach(lib ${BROTLI_LIBRARIES_CORE})
   target_link_libraries(${lib} ${LIBM_LIBRARY})
