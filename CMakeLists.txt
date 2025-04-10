@@ -132,10 +132,9 @@ endif()
 # With info from: https://discourse.cmake.org/t/how-to-merge-libraries-into-single-shared-library/13421 and https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#genex:TARGET_OBJECTS
 # TODO: We don't need an entire fork to do this, Can we setup a workflow that pulls the source and just does this as a separate CMakeList or something?
 if(BUILD_SHARED_SINGLE_FILE)
-       add_library(brolib SHARED $<TARGET_OBJECTS:brotlienc> $<TARGET_OBJECTS:brotlidec>)
-       target_link_libraries(brolib brotlienc brotlidec)
+       add_library(brolib SHARED $<TARGET_OBJECTS:brotlienc> $<TARGET_OBJECTS:brotlidec> $<TARGET_OBJECTS:brotlicommon>)
+       target_link_libraries(brolib brotlienc brotlidec brotlicommon)
 endif()
-
 
 foreach(lib ${BROTLI_LIBRARIES_CORE})
   target_link_libraries(${lib} ${LIBM_LIBRARY})
