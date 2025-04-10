@@ -133,7 +133,6 @@ endif()
 # TODO: We don't need an entire fork to do this, Can we setup a workflow that pulls the source and just does this as a separate CMakeList or something?
 if(BUILD_SHARED_SINGLE_FILE)
        add_library(brolib SHARED $<TARGET_OBJECTS:brotlienc> $<TARGET_OBJECTS:brotlidec> $<TARGET_OBJECTS:brotlicommon>)
-       # target_link_libraries(brolib brotlienc brotlidec)
 endif()
 
 foreach(lib ${BROTLI_LIBRARIES_CORE})
